@@ -51,16 +51,16 @@ function reqTimeUnit(scl = 1) {
 }
 
 //SETUP
-document.getElementById("new")!.addEventListener("click", (evt) => {
+document.getElementById("new")!.addEventListener("click", () => {
   generate();
 });
-document.getElementById("shuffle")!.addEventListener("click", (evt) => {
+document.getElementById("shuffle")!.addEventListener("click", () => {
   shuffle();
 });
-document.getElementById("clear")!.addEventListener("click", (evt) => {
+document.getElementById("clear")!.addEventListener("click", () => {
   array.length = 0;
 });
-document.getElementById("bubble-sort")!.addEventListener("click", (evt) => {
+document.getElementById("bubble-sort")!.addEventListener("click", () => {
   bubbleSort();
 });
 
