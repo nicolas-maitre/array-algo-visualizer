@@ -1,58 +1,94 @@
 import "./style.css";
-import { reqAnimFrame } from "./utils";
+import { reqTimeout } from "./utils";
 
 let array: number[] = [];
+let speedFactor = 1;
 
-async function generateAndShuffle() {
-  //generate
-  const numCounts = 100;
-  for (let ind = 0; ind < numCounts; ind++) {
-    array[ind] = ind;
-    await reqAnimFrame();
+//ALGORYTHMS
+function compareFn(a: number, b: number) {
+  return a - b;
+}
+async function generate() {
+  const numCount = 150;
+  //remove excess
+  while (array.length > numCount) {
+    array.splice(-1);
+    await reqTimeUnit();
   }
-  //shuffle
+  //gen
+  for (let ind = 0; ind < numCount; ind++) {
+    array[ind] = (ind * 100) / numCount;
+    await reqTimeUnit();
+  }
+}
+async function shuffle() {
   for (let ind = 0; ind < array.length; ind++) {
     const indToSwap =
       Math.floor(Math.random() * (array.length - ind - 1)) + ind;
     const swapVal = array[indToSwap];
     array[indToSwap] = array[ind];
     array[ind] = swapVal;
-    await reqAnimFrame();
+    await reqTimeUnit();
   }
 }
-document.getElementById("newshuffle")!.addEventListener("click", (evt) => {
-  generateAndShuffle();
+async function bubbleSort() {
+  for (let maxInd = array.length - 1; maxInd > 0; maxInd--) {
+    for (let ind = 0; ind < maxInd; ind++) {
+      const compareRes = compareFn(array[ind], array[ind + 1]);
+      if (compareRes === 0) continue;
+      if (compareRes > 0) {
+        const swapNum = array[ind + 1];
+        array[ind + 1] = array[ind];
+        array[ind] = swapNum;
+        await reqTimeUnit();
+      }
+    }
+  }
+}
+
+function reqTimeUnit(scl = 1) {
+  return reqTimeout((10 / speedFactor) * scl);
+}
+
+//SETUP
+document.getElementById("new")!.addEventListener("click", (evt) => {
+  generate();
 });
-document.getElementById("push")!.addEventListener("click", (evt) => {
-  array.push(Math.random() * 100);
+document.getElementById("shuffle")!.addEventListener("click", (evt) => {
+  shuffle();
 });
 document.getElementById("clear")!.addEventListener("click", (evt) => {
   array.length = 0;
 });
-document.getElementById("remove")!.addEventListener("click", (evt) => {
-  array.splice(Math.floor(Math.random() * array.length), 1);
+document.getElementById("bubble-sort")!.addEventListener("click", (evt) => {
+  bubbleSort();
 });
-generateAndShuffle();
+
+//start
+(async () => {
+  await generate();
+  await shuffle();
+  await bubbleSort();
+})();
+
+//RENDER
 startRendering();
 function startRendering() {
   const barsContainer = document.getElementById("table-values")!;
-  const barItems: { elem: HTMLDivElement; value?: number }[] = [];
+  const barItems: {
+    elem: HTMLDivElement;
+    value?: number;
+    touched?: boolean;
+  }[] = [];
   function renderLoop() {
     //equalize
     if (array.length != barItems.length) {
       if (array.length < barItems.length) {
         //remove
         const removedItems = barItems.splice(array.length);
-        // for (let ind = 0; ind < removedItems.length; ind++) {
-        //   removedItems[ind].elem.style.width = "0%";
-        //   removedItems[ind].elem.style.height = "0%";
-        //   removedItems[ind].elem.dataset.value = "";
-        // }
-        // setTimeout(() => {
         for (let ind = 0; ind < removedItems.length; ind++) {
           removedItems[ind].elem.remove();
         }
-        // }, 500);
       } else {
         //add
         for (let ind = barItems.length; ind < array.length; ind++) {
@@ -64,26 +100,30 @@ function startRendering() {
         }
       }
       //recalculate width/left
-      const percentVal = 100 / barItems.length; // + Number.MIN_VALUE;
+      const percentVal = 100 / barItems.length;
       const percentString = percentVal + "%";
-      // requestAnimationFrame(() => {
       for (let ind = 0; ind < barItems.length; ind++) {
         barItems[ind].elem.style.width = percentString;
         barItems[ind].elem.style.left = percentVal * ind + "%";
       }
-      // });
     }
-    //diff (height)
-    // requestAnimationFrame(() => {
+    //diff
     for (let ind = 0; ind < barItems.length; ind++) {
+      if (barItems[ind].touched) {
+        barItems[ind].touched = false;
+        barItems[ind].elem.classList.remove("touched");
+      }
+
       if (barItems[ind].value !== array[ind]) {
         barItems[ind].value = array[ind];
         barItems[ind].elem.style.height = array[ind] + "%";
         barItems[ind].elem.dataset.value = Math.round(array[ind]) + "";
+
+        barItems[ind].touched = true;
+        barItems[ind].elem.classList.add("touched");
       }
     }
-    // });
-    //continue
+
     requestAnimationFrame(renderLoop);
   }
   renderLoop();

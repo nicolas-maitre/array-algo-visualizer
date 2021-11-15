@@ -20,6 +20,9 @@ body {
     position: absolute;
     bottom: 0;
     background: #ccc;
+    &.touched {
+      background: red;
+    }
     &::before {
       /* transition: 500ms height, 500ms width, 500ms left; */
       color: white;

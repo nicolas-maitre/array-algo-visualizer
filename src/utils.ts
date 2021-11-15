@@ -3,8 +3,8 @@ export function reqAnimFrame() {
     requestAnimationFrame(res);
   });
 }
-export function reqTimeout() {
+export function reqTimeout(time?: number) {
   return new Promise((res) => {
-    setTimeout(res);
+    setTimeout(res, time);
   });
 }
