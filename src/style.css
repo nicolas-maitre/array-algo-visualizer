@@ -1,0 +1,34 @@
+body {
+  background-color: #333;
+  display: flex;
+  flex-flow: column;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+#top-menu {
+  background: #0006;
+  z-index: 1;
+  > button {
+    font-size: 25px;
+  }
+}
+#table-values {
+  flex: 1;
+  position: relative;
+  > div {
+    position: absolute;
+    bottom: 0;
+    background: #ccc;
+    &::before {
+      /* transition: 500ms height, 500ms width, 500ms left; */
+      color: white;
+      position: absolute;
+      width: 100%;
+      font-size: 10px;
+      top: -15px;
+      text-align: center;
+      content: attr(data-value);
+    }
+  }
+}
