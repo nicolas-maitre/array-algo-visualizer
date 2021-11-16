@@ -34,13 +34,13 @@ async function shuffle() {
 async function bubbleSort() {
   for (let maxInd = array.length - 1; maxInd > 0; maxInd--) {
     for (let ind = 0; ind < maxInd; ind++) {
+      await reqTimeUnit();
       const compareRes = compareFn(array[ind], array[ind + 1]);
       if (compareRes === 0) continue;
       if (compareRes > 0) {
         const swapNum = array[ind + 1];
         array[ind + 1] = array[ind];
         array[ind] = swapNum;
-        await reqTimeUnit();
       }
     }
   }
