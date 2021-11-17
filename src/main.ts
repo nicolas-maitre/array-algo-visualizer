@@ -2,7 +2,9 @@ import "./style.css";
 import { reqTimeout } from "./utils";
 
 let array: number[] = [];
+(window as any).array = array;
 let speedFactor = 1;
+let skipSubloopAnimation = false;
 
 //ALGORYTHMS
 function compareFn(a: number, b: number) {
@@ -33,8 +35,9 @@ async function shuffle() {
 }
 async function bubbleSort() {
   for (let maxInd = array.length - 1; maxInd > 0; maxInd--) {
+    if (skipSubloopAnimation) await reqTimeUnit();
     for (let ind = 0; ind < maxInd; ind++) {
-      await reqTimeUnit();
+      if (!skipSubloopAnimation) await reqTimeUnit();
       const compareRes = compareFn(array[ind], array[ind + 1]);
       if (compareRes === 0) continue;
       if (compareRes > 0) {
@@ -63,7 +66,13 @@ document.getElementById("clear")!.addEventListener("click", () => {
 document.getElementById("bubble-sort")!.addEventListener("click", () => {
   bubbleSort();
 });
-
+const skipSubloopAnimationElem = document.getElementById(
+  "skip-subloop-anim"
+)! as HTMLInputElement;
+skipSubloopAnimationElem.checked = skipSubloopAnimation;
+skipSubloopAnimationElem.addEventListener("change", () => {
+  skipSubloopAnimation = skipSubloopAnimationElem.checked;
+});
 //start
 (async () => {
   await generate();

@@ -9,6 +9,7 @@ body {
 #top-menu {
   background: #0006;
   z-index: 1;
+  color: white;
   > button {
     font-size: 25px;
   }
@@ -20,16 +21,16 @@ body {
     position: absolute;
     bottom: 0;
     background: #ccc;
+    /* transition: 500ms height, 500ms width, 500ms left; */
     &.touched {
       background: red;
     }
     &::before {
-      /* transition: 500ms height, 500ms width, 500ms left; */
       color: white;
       position: absolute;
       width: 100%;
-      font-size: 10px;
-      top: -15px;
+      font-size: 0.5vw;
+      top: -0.6vw;
       text-align: center;
       content: attr(data-value);
     }
